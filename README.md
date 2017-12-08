@@ -11,5 +11,5 @@ type MyCoolType = {
     hello: string
     world: string
 }
-let myDeserializedType : MyCoolType seq = Csv.deserialize<MyCoolType> mystring
+let myDeserializedType : MyCoolType seq = Csv.deserialize<MyCoolType> "," mystring
 ```
