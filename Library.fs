@@ -25,13 +25,9 @@ module CSVParse =
   let nonQuotedCellChar delim = escapeChar <|> (noneOf (delim + "\r\n"))
   let cellChar = escapeChar <|> (noneOf "\"")
 
-  // Trys to parse quoted cells, if that fails try to parse non-quoted cells
   let cell delim = between (chr '\"') (chr '\"') (manyChars cellChar) <|> manyChars (nonQuotedCellChar delim)
 
-  // Cells are delimited by  a specified string
   let row delim = sepBy (cell delim) (st delim)
-
-  // Rows are delimited by newlines
   let csv delim = sepBy (row delim) newline .>> eof
   let commaCsv = csv ","
 
