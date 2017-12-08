@@ -5,7 +5,6 @@ module Csv =
     open FSharp.Reflection
 
     let handleResult<'a> header rest = 
-
         let aType = typeof<'a>
         let recordFields = FSharpType.GetRecordFields(aType)
         let toMapFunc x =
@@ -13,10 +12,16 @@ module Csv =
                 recordFields
                 |> Array.map (fun y -> Map.find y.Name x :> obj)
             mappedData
+        printfn "Header: %A" header
+        printfn "Rest: %A" rest
+
         let mappedData = 
             rest
-            |> Seq.map (List.zip header >> Map.ofList >> toMapFunc)
-            |> Seq.map (fun x -> FSharpValue.MakeRecord(aType, x) :?> 'a)
+            |> Seq.map (
+                List.zip header
+                >> Map.ofList
+                >> toMapFunc
+                >> (fun x -> FSharpValue.MakeRecord(aType, x) :?> 'a))
         mappedData
 
     let deserialize<'a> delimiter mystring =
