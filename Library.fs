@@ -38,4 +38,9 @@ module CSVParse =
       match res with
       | Success (rows, _, _) -> { IsSuccess = true; ErrorMsg = "Ok"; Result = stripEmpty rows }
       | Failure (s, _, _) -> { IsSuccess = false; ErrorMsg = s; Result = [[]] |> Seq.ofList}
+  let ParseCsvStream path delim =
+      let res = runParserOnFile (csv delim) () path (System.Text.Encoding.UTF8) 
+      match res with
+      | Success (rows, _, _) -> { IsSuccess = true; ErrorMsg = "Ok"; Result = stripEmpty rows}
+      | Failure (s, _, _) -> { IsSuccess = false; ErrorMsg = s; Result = [[]] |> Seq.ofList}
 
