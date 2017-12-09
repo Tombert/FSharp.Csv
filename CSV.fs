@@ -2,6 +2,7 @@ namespace Vertigo.CsvParse
 module Csv =
     open Microsoft.FSharp.Reflection
     open CSVParse
+    open System.Text
     open FSharp.Reflection
 
     let handleResult<'a> header rest = 
@@ -12,8 +13,6 @@ module Csv =
                 recordFields
                 |> Array.map (fun y -> Map.find y.Name x :> obj)
             mappedData
-        printfn "Header: %A" header
-        printfn "Rest: %A" rest
 
         let mappedData = 
             rest
@@ -30,10 +29,32 @@ module Csv =
         let (header, rest) = (csvSeq |> Seq.head |> List.ofSeq, Seq.tail csvSeq)
         handleResult<'a> header rest 
 
-    let deserializeFromFile<'a> delimiter filepath = 
-        let csvResult = CSVParse.ParseCsvStream filepath delimiter
-        let csvSeq = csvResult.Result
-        let (header, rest) = (csvSeq |> Seq.head |> List.ofSeq, Seq.tail csvSeq)
-        handleResult<'a> header rest 
+    let readFileStream (filepath: string) = seq {
+        use filestream = new System.IO.StreamReader(filepath)
+        while (not filestream.EndOfStream ) do
+            yield filestream.ReadLine()
+        done
+        }
+    let deserializeFromFile<'a> (delimiter: string) size (filepath: string) = 
+        let res = 
+            filepath
+            |> readFileStream
+            |> Seq.chunkBySize size
+            |> Seq.collect (
+                (String.concat "\n")
+                >> (fun x ->
+                    let res  = CSVParse.ParseCsv x ","
+                    res.Result))
+        //    |> Seq.concat
+        let (header, rest) = (Seq.head res, Seq.tail res)
+        handleResult<'a> header rest
+
+
+
+        
+        // let csvResult = CSVParse.ParseCsvStream filepath delimiter
+        // let csvSeq = csvResult.Result
+        // let (header, rest) = (csvSeq |> Seq.head |> List.ofSeq, Seq.tail csvSeq)
+        // handleResult<'a> header rest 
 
 
