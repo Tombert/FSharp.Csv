@@ -49,6 +49,34 @@ module Csv =
         let (header, rest) = (Seq.head res, Seq.tail res)
         handleResult<'a> header rest
 
+    let getAttributes (x: System.Reflection.PropertyInfo) = 
+        let at = x.GetCustomAttributes(typeof<CsvProperty>, false)
+        if at.Length >= 1 then
+            at.[0] :?> CsvProperty
+        else
+            CsvProperty.Default
+
+    let serialize delim (objekt: #obj seq) = seq {
+        let first = Seq.head objekt
+        let aType = first.GetType()
+        let recordFields = FSharpType.GetRecordFields(aType)
+        let newfields = 
+            recordFields
+            |> Array.sortBy (fun x ->
+                let ats = getAttributes x
+                ats.Order)
+            |> Array.map ((fun x -> x.Name) )
+        let res =
+            objekt
+            |> Seq.map
+                ((fun i ->
+                 newfields
+                 |> Array.map (fun j -> aType.GetProperty(j).GetValue(i).ToString()) ) >> (String.concat delim))
+        
+        yield (newfields |> String.concat delim)
+        yield! res
+        }
+
 
 
         
