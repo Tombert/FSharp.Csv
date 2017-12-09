@@ -46,3 +46,19 @@ let ``Serializing String`` () =
     let third = Seq.head rest
     Assert.Equal(third, "Another,Test")
 
+[<Fact>]
+let ``Deserialize From File`` () =
+    let fileName = "../../../test.csv"
+    let result =
+        fileName
+        |> Csv.deserializeFromFile<Blah> "," 10 
+        |> Seq.toArray 
+    printfn "result: %A" result
+    Assert.Equal(result.[0].Hello,"This")
+    Assert.Equal(result.[0].World,"is")
+    Assert.Equal(result.[1].Hello,"a")
+    Assert.Equal(result.[1].World,"test")
+    Assert.Equal(result.[2].Hello,"for")
+    Assert.Equal(result.[2].World,"you")
+    ()
+
