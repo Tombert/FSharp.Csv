@@ -3,11 +3,14 @@ module main =
 
   open Csv
   type Fart = {
+      [<CsvProperty(Order=2)>]
       Howdy: string
+      [<CsvProperty(Order=1)>]
       Blah : string
       }
   [<EntryPoint>]
   let main args =
-      let yo = deserializeFromFile<Fart> "," "/home/tombert/blah.csv" 
-      printfn "Hello world: %A" yo
+      let yo = deserializeFromFile<Fart> "," 10 "/home/tombert/yo.csv" 
+      let blah = serialize "," yo
+      printfn "Hello world: %A" blah
       0
