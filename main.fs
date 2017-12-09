@@ -11,6 +11,6 @@ module main =
   [<EntryPoint>]
   let main args =
       let yo = deserializeFromFile<Fart> "," 10 "/home/tombert/yo.csv" 
-      let blah = serialize "," yo
-      printfn "Hello world: %A" blah
+      let blah = serializeToFile "," "/home/tombert/ffff.csv" yo
+      printfn "Done" 
       0
