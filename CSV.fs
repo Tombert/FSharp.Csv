@@ -76,13 +76,8 @@ module Csv =
         yield (newfields |> String.concat delim)
         yield! res
         }
-
-
-
-        
-        // let csvResult = CSVParse.ParseCsvStream filepath delimiter
-        // let csvSeq = csvResult.Result
-        // let (header, rest) = (csvSeq |> Seq.head |> List.ofSeq, Seq.tail csvSeq)
-        // handleResult<'a> header rest 
-
-
+    let serializeToFile delim (filepath:string) (objekt : #obj seq) =
+        let result = serialize delim objekt
+        use sw = new System.IO.StreamWriter(filepath)
+        result 
+        |> Seq.iter (fun x -> sw.WriteLine x)
