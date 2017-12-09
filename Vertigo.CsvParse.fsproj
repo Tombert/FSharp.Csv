@@ -5,6 +5,7 @@
   <ItemGroup>
     <PackageReference Include="FParsec" Version="1.0.3" />
     <Compile Include="Library.fs" />
+    <Compile Include="CsvProperty.fs" />
     <Compile Include="CSV.fs" />
   </ItemGroup>
 </Project>
