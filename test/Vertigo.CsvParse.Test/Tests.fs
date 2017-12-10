@@ -97,5 +97,4 @@ let ``Serialize to File`` () =
         Assert.Equal(yo.[0].Hello, "Howdy")
         Assert.Equal(yo.[0].World, "Yall")
      finally
-         ()
-        //System.IO.File.Delete filename
+         System.IO.File.Delete filename
