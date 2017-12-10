@@ -1,6 +1,8 @@
 # Vertigo.CsvParse
 ## A reflection-based CSV Parser that 
-![logo][https://travis-ci.org/Tombert/Vertigo.CsvParse.svg?branch=master]
+
+![logo](https://travis-ci.org/Tombert/Vertigo.CsvParse.svg?branch=master)
+
 ```
 open Vertigo.CsvParse
 
