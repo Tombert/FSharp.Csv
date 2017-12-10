@@ -5,7 +5,9 @@ open Xunit
 open Vertigo.CsvParse
 
 type Blah = {
+    [<CsvProperty(Quote=false)>]
     Hello: string
+    [<CsvProperty(Quote=true)>]
     World: string
     }
 
@@ -61,9 +63,9 @@ let ``Serializing String`` () =
     Assert.Equal(first, "Hello,World")
     let second = Seq.head rest
     let rest = Seq.tail rest
-    Assert.Equal(second, "howdy,yall")
+    Assert.Equal(second, "howdy,\"yall\"")
     let third = Seq.head rest
-    Assert.Equal(third, "Another,Test")
+    Assert.Equal(third, "Another,\"Test\"")
 
 [<Fact>]
 let ``Deserialize From File`` () =
@@ -95,4 +97,5 @@ let ``Serialize to File`` () =
         Assert.Equal(yo.[0].Hello, "Howdy")
         Assert.Equal(yo.[0].World, "Yall")
      finally
-        System.IO.File.Delete filename
+         ()
+        //System.IO.File.Delete filename

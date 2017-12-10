@@ -69,15 +69,24 @@ module Csv =
             |> Array.sortBy (fun x ->
                 let ats = getAttributes x
                 ats.Order)
-            |> Array.map ((fun x -> x.Name) )
+            |> Array.map ((fun x ->
+                let ats = getAttributes x
+                (x.Name, ats.Quote)))
         let res =
             objekt
             |> Seq.map
                 ((fun i ->
                  newfields
-                 |> Array.map (fun j -> aType.GetProperty(j).GetValue(i).ToString()) ) >> (String.concat delim))
+                 |> Array.map
+                     (fun (name, quote) ->
+                         let myString = aType.GetProperty(name).GetValue(i).ToString()
+                         if quote then
+                             sprintf "\"%s\"" myString
+                         else myString
+
+                      ) ) >> (String.concat delim))
         
-        yield (newfields |> String.concat delim)
+        yield (newfields |> Array.map fst |> String.concat delim)
         yield! res
         }
     let serializeToFile delim (filepath:string) (objekt : #obj seq) =
