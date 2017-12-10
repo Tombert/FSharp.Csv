@@ -13,4 +13,4 @@ addons:
 script: 
  - dotnet restore
  - dotnet build
- - dotnet test
+ - dotnet test test/Vertigo.CsvParse.Test
