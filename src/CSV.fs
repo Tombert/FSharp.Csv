@@ -8,10 +8,14 @@ module Csv =
     let handleResult<'a> header rest = 
         let aType = typeof<'a>
         let recordFields = FSharpType.GetRecordFields(aType)
-        let toMapFunc x =
+        let toMapFunc (x: Map<string,string>) =
             let mappedData =
                 recordFields
-                |> Array.map (fun y -> Map.find y.Name x :> obj)
+                |> Array.map
+                    (fun y ->
+                        let converter =
+                            System.ComponentModel.TypeDescriptor.GetConverter(y.PropertyType)
+                        converter.ConvertFromString(Map.find y.Name x))
             mappedData
 
         let mappedData = 

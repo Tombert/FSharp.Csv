@@ -7,7 +7,12 @@ open Vertigo.CsvParse
 type Blah = {
     Hello: string
     World: string
+    }
 
+type MixedType = {
+    MyString: string
+    MyInt : int
+    MyBool: bool
     }
 
 [<Fact>]
@@ -23,6 +28,18 @@ another,test"""
     Assert.Equal(result.[0].World, "thing")
     Assert.Equal(result.[1].Hello, "another")
     Assert.Equal(result.[1].World, "test")
+
+[<Fact>]
+let ``Parse Non String`` () =
+    let input = """MyString,MyInt,MyBool
+Hello,112,false"""
+    let parsed =
+        Csv.deserialize<MixedType> "," input
+        |> Seq.toArray
+    Assert.Equal(parsed.[0].MyString,"Hello")
+    Assert.Equal(parsed.[0].MyInt,112)
+    Assert.Equal(parsed.[0].MyBool,false)
+    ()
 
 [<Fact>]
 let ``Serializing String`` () =
