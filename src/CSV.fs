@@ -86,7 +86,14 @@ module Csv =
 
                       ) ) >> (String.concat delim))
         
-        yield (newfields |> Array.map fst |> String.concat delim)
+        yield
+            (newfields
+                |> Array.map
+                    (fun (name, quote) ->
+                        if quote then
+                            sprintf "\"%s\"" name
+                        else name)
+               |> String.concat delim)
         yield! res
         }
     let serializeToFile delim (filepath:string) (objekt : #obj seq) =

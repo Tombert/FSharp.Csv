@@ -60,7 +60,7 @@ let ``Serializing String`` () =
     let result = Csv.serialize "," testInput
     let first = Seq.head result
     let rest = Seq.tail result
-    Assert.Equal(first, "Hello,World")
+    Assert.Equal(first, "Hello,\"World\"")
     let second = Seq.head rest
     let rest = Seq.tail rest
     Assert.Equal(second, "howdy,\"yall\"")
