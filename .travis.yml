@@ -1,0 +1,9 @@
+language: fsharp
+mono: none
+dotnet: 2.0.0
+dist: trusty
+solution: Vertigo.CsvParse.sln
+script: 
+    dotnet restore
+    dotnet build
+    dotnet test
