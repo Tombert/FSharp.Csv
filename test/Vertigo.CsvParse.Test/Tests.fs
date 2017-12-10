@@ -53,7 +53,6 @@ let ``Deserialize From File`` () =
         fileName
         |> Csv.deserializeFromFile<Blah> "," 10 
         |> Seq.toArray 
-    printfn "result: %A" result
     Assert.Equal(result.[0].Hello,"This")
     Assert.Equal(result.[0].World,"is")
     Assert.Equal(result.[1].Hello,"a")
@@ -62,3 +61,19 @@ let ``Deserialize From File`` () =
     Assert.Equal(result.[2].World,"you")
     ()
 
+[<Fact>]
+let ``Serialize to File`` () = 
+    let filename = "tempfile.csv"
+    try 
+        let initData = [|{Hello = "Howdy"; World = "Yall"}|]
+
+        initData |> Csv.serializeToFile "," filename
+
+        let yo = 
+            filename
+            |> Csv.deserializeFromFile<Blah> "," 10
+            |> Array.ofSeq
+        Assert.Equal(yo.[0].Hello, "Howdy")
+        Assert.Equal(yo.[0].World, "Yall")
+     finally
+        System.IO.File.Delete filename
