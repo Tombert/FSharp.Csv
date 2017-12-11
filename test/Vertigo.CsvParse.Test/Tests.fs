@@ -83,6 +83,13 @@ let ``Deserialize From File`` () =
     ()
 
 [<Fact>]
+let ``Remove Escape Characters`` () =
+    let inputString = "hello\nworld\tthis\ra\ttest\""
+    let result = Csv.toLiteral inputString
+    Assert.Equal("hello\\nworld\\tthis\\ra\\ttest\\\"",result)
+    ()
+
+[<Fact>]
 let ``Serialize to File`` () = 
     let filename = "tempfile.csv"
     try 

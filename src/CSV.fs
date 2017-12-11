@@ -3,6 +3,8 @@ module Csv =
     open Microsoft.FSharp.Reflection
     open CSVParse
     open System.Text
+    open System.IO
+    open System.CodeDom.Compiler
     open FSharp.Reflection
 
     let handleResult<'a> header rest = 
@@ -20,13 +22,38 @@ module Csv =
 
         let mappedData = 
             rest
-            |> Seq.map (
-                List.zip header
+            |> Seq.map (List.zip header
                 >> Map.ofList
                 >> toMapFunc
                 >> (fun x -> FSharpValue.MakeRecord(aType, x) :?> 'a))
         mappedData
 
+    let toLiteral (input : string) = 
+         let literal = new StringBuilder(input.Length + 2)
+         //literal.Append("\"") |> ignore
+         input |> String.iter (fun x ->
+             let c = int x
+             match x with
+             |'\'' -> literal.Append(@"\'")
+             |'\"' -> literal.Append("\\\"")
+             |'\\' -> literal.Append(@"\\")
+             | '\a' -> literal.Append(@"\a")
+             | '\b' -> literal.Append(@"\b")
+             | '\f' -> literal.Append(@"\f")
+             | '\n' -> literal.Append(@"\n")
+             | '\r' -> literal.Append(@"\r")
+             | '\t' -> literal.Append(@"\t")
+             | '\v' -> literal.Append(@"\v")
+             | _ ->
+                 if c >= 0x20 && c <= 0x7e then
+                     literal.Append(x)
+                 else 
+                     literal.Append(@"\u") |> ignore
+                     literal.Append(c)
+             |> ignore
+             ())
+         literal.ToString()
+         
     let deserialize<'a> delimiter mystring =
         let csvResult = CSVParse.ParseCsv mystring delimiter
         let csvSeq = csvResult.Result
@@ -96,6 +123,7 @@ module Csv =
                |> String.concat delim)
         yield! res
         }
+
     let serializeToFile delim (filepath:string) (objekt : #obj seq) =
         let result = serialize delim objekt
         use sw = new System.IO.StreamWriter(filepath)
