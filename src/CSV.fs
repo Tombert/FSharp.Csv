@@ -106,7 +106,7 @@ module Csv =
                  newfields
                  |> Array.map
                      (fun (name, quote) ->
-                         let myString = aType.GetProperty(name).GetValue(i).ToString()
+                         let myString = aType.GetProperty(name).GetValue(i).ToString() |> toLiteral
                          if quote then
                              sprintf "\"%s\"" myString
                          else myString
