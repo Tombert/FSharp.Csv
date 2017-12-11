@@ -83,7 +83,7 @@ module Csv =
                 >> (fun x ->
                     let res  = CSVParse.ParseCsv x ","
                     res.Result))
-        //    |> Seq.concat
+
         let (header, rest) = (Seq.head res, Seq.tail res)
         handleResult<'a> header rest
 
