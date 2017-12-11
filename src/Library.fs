@@ -31,7 +31,7 @@ module CSVParse =
   let csv delim = sepBy (row delim) newline .>> eof
   let commaCsv = csv ","
 
-  let stripEmpty ls = Seq.filter (fun (row:'a list) -> (row.Length <> 0) && (row <> [""]) ) ls
+  let stripEmpty ls = Seq.filter (fun (row:string list) -> (row.Length <> 0) && (row <> [""]) ) ls
 
   let ParseCsv s delim  =
       let res = run (csv delim) s in
