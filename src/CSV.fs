@@ -7,24 +7,31 @@ module Csv =
     open System.CodeDom.Compiler
     open FSharp.Reflection
 
+    let toMapFunc (recordFields: System.Reflection.PropertyInfo []) (x: Map<string,string>) =
+        let mappedData =
+            recordFields
+            |> Array.map
+                (fun y ->
+                    let converter =
+                        System
+                         .ComponentModel
+                         .TypeDescriptor
+                         .GetConverter(y.PropertyType)
+                    converter.ConvertFromString(Map.find y.Name x))
+        mappedData
+
+
+
+
     let handleResult<'a> header rest = 
         let aType = typeof<'a>
         let recordFields = FSharpType.GetRecordFields(aType)
-        let toMapFunc (x: Map<string,string>) =
-            let mappedData =
-                recordFields
-                |> Array.map
-                    (fun y ->
-                        let converter =
-                            System.ComponentModel.TypeDescriptor.GetConverter(y.PropertyType)
-                        converter.ConvertFromString(Map.find y.Name x))
-            mappedData
 
         let mappedData = 
             rest
             |> Seq.map (List.zip header
                 >> Map.ofList
-                >> toMapFunc
+                >> (toMapFunc recordFields)
                 >> (fun x -> FSharpValue.MakeRecord(aType, x) :?> 'a))
         mappedData
 
