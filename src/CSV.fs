@@ -60,7 +60,12 @@ module Csv =
              |> ignore
              ())
          literal.ToString()
-         
+
+
+
+
+
+
     let deserialize<'a> delimiter mystring =
         let csvResult = CSVParse.ParseCsv mystring delimiter
         let csvSeq = csvResult.Result
