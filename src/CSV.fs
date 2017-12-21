@@ -23,9 +23,7 @@ module Csv =
 
 
 
-    let handleResult<'a> header rest = 
-        let aType = typeof<'a>
-        let recordFields = FSharpType.GetRecordFields(aType)
+    let handleResult<'a> (aType: System.Type) (recordFields: System.Reflection.PropertyInfo []) header rest = 
 
         let mappedData = 
             rest
@@ -67,10 +65,12 @@ module Csv =
 
 
     let deserialize<'a> delimiter mystring =
+        let aType = typeof<'a>
+        let recordFields = FSharpType.GetRecordFields(aType)
         let csvResult = CSVParse.ParseCsv mystring delimiter
         let csvSeq = csvResult.Result
         let (header, rest) = (csvSeq |> Seq.head |> List.ofSeq, Seq.tail csvSeq)
-        handleResult<'a> header rest 
+        handleResult<'a> aType recordFields header rest 
 
     let readFileStream (filepath: string) = seq {
         use filestream = new System.IO.StreamReader(filepath)
@@ -79,6 +79,8 @@ module Csv =
         done
         }
     let deserializeFromFile<'a> (delimiter: string) size (filepath: string) = 
+        let aType = typeof<'a>
+        let recordFields = FSharpType.GetRecordFields(aType)
         let res = 
             filepath
             |> readFileStream
@@ -90,7 +92,7 @@ module Csv =
                     res.Result))
 
         let (header, rest) = (Seq.head res, Seq.tail res)
-        handleResult<'a> header rest
+        handleResult<'a> aType recordFields header rest
 
     let getAttributes (x: System.Reflection.PropertyInfo) = 
         let at = x.GetCustomAttributes(typeof<CsvProperty>, false)
