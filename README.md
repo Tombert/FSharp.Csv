@@ -1,4 +1,4 @@
-# Vertigo.CsvParse
+# FSharp.Csv
 ## A reflection-based CSV Parser that 
 
 ![logo](https://travis-ci.org/Tombert/Vertigo.CsvParse.svg?branch=master)
