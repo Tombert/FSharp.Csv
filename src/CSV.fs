@@ -88,7 +88,7 @@ module Csv =
             |> Seq.collect (
                 (String.concat "\n")
                 >> (fun x ->
-                    let res  = CSVParse.ParseCsv x ","
+                    let res  = CSVParse.ParseCsv x delimiter
                     res.Result))
 
         let (header, rest) = (Seq.head res, Seq.tail res)
